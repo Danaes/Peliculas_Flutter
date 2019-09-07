@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
-import 'package:peliculas/src/providers/peliculas_provider.dart';
+import 'package:peliculas/src/providers/films_provider.dart';
+import 'package:peliculas/src/search/search_delegate.dart';
+
 import 'package:peliculas/src/widgets/card_swiper_widget.dart';
 import 'package:peliculas/src/widgets/movie_horizontal.dart';
 
 class HomePage extends StatelessWidget {
 
-  final PeliculasProvider peliculasProvider = new PeliculasProvider();
+  final FilmsProvider filmsProvider = new FilmsProvider();
 
   @override
   Widget build(BuildContext context) {
 
-    peliculasProvider.getPopular();
+    filmsProvider.getPopular();
 
     return Scaffold(
       appBar: AppBar(
@@ -21,7 +23,9 @@ class HomePage extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
-            onPressed: (){},
+            onPressed: (){
+              showSearch( context: context, delegate: DataSearch() );
+            },
           )
         ],
       ),
@@ -30,7 +34,7 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             _swiperTarjetas(),
-            _footer( context),
+            _footer( context ),
           ],
         ),
       ),
@@ -40,11 +44,11 @@ class HomePage extends StatelessWidget {
   Widget _swiperTarjetas() {
 
     return FutureBuilder(
-      future: peliculasProvider.getNowPlaying(),
+      future: filmsProvider.getNowPlaying(),
       builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
 
         return ( snapshot.hasData ) ? 
-          CardSwiper( peliculas: snapshot.data ) :
+          CardSwiper( films: snapshot.data ) :
           Container(
             height: 400.0,
             child: Center(
@@ -69,11 +73,11 @@ class HomePage extends StatelessWidget {
           ),
           SizedBox( height: 5.0),
           StreamBuilder(
-            stream: peliculasProvider.popularesStream,
+            stream: filmsProvider.popularesStream,
             builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
 
               return ( snapshot.hasData ) ? 
-                MovieHorizontal( films: snapshot.data, nextPage: peliculasProvider.getPopular ) :
+                MovieHorizontal( films: snapshot.data, nextPage: filmsProvider.getPopular ) :
                 Center(
                   child: CircularProgressIndicator( backgroundColor: Colors.indigoAccent )
                 );

@@ -1,22 +1,24 @@
+class Films {
+  List<Film> items = new List();
 
-class Peliculas {
-  List<Pelicula> items = new List();
+  Films();
 
-  Peliculas();
-
-  Peliculas.fromJsonList( List<dynamic> jsonList ){
+  Films.fromJsonList( List<dynamic> jsonList ){
 
     if(jsonList == null) return;
     
     for (var item in jsonList) {
-      final pelicula = new Pelicula.fromJsonMap(item);
-      items.add( pelicula );
+      final film = new Film.fromJsonMap(item);
+      items.add( film );
     }
 
   }
 }
 
-class Pelicula {
+class Film {
+
+  String uniqueID;
+
   double popularity;
   int voteCount;
   bool video;
@@ -32,7 +34,7 @@ class Pelicula {
   String overview;
   String releaseDate;
 
-  Pelicula({
+  Film({
     this.popularity,
     this.voteCount,
     this.video,
@@ -49,7 +51,7 @@ class Pelicula {
     this.releaseDate,
   });
 
-  Pelicula.fromJsonMap(Map<String, dynamic> json){
+  Film.fromJsonMap(Map<String, dynamic> json){
     popularity       = json['popularity'] / 1; // para obtener el Double
     voteCount        = json['vote_count'];
     video            = json['video'];
@@ -66,11 +68,11 @@ class Pelicula {
     releaseDate      = json['release_date'];
   }
 
-  getPosterImgs(){
-
-    return (posterPath == null) ? 
+  getPosterImgs() => (posterPath == null) ? 
       'https://www.gumtree.com/static/1/resources/assets/rwd/images/orphans/a37b37d99e7cef805f354d47.noimage_thumbnail.png' : 
       'https://image.tmdb.org/t/p/w500/$posterPath';
-      
-  }
+
+  getBackgroundImg() => (backdropPath == null) ? 
+      'https://www.gumtree.com/static/1/resources/assets/rwd/images/orphans/a37b37d99e7cef805f354d47.noimage_thumbnail.png' : 
+      'https://image.tmdb.org/t/p/w500/$backdropPath';
 }

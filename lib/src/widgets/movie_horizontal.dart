@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:peliculas/src/models/pelicula_model.dart';
+import 'package:peliculas/src/models/film_model.dart';
 
 class MovieHorizontal extends StatelessWidget {
 
-  final List<Pelicula> films;
+  final List<Film> films;
   final Function nextPage;
   final _pageController = new PageController( initialPage: 1, viewportFraction: 0.3 );
 
@@ -32,19 +32,24 @@ class MovieHorizontal extends StatelessWidget {
     );
   }
 
-  Widget _tarjeta( BuildContext context, Pelicula film) {
+  Widget _tarjeta( BuildContext context, Film film) {
 
-    return Container(
+    film.uniqueID = '${ film.id }-poster';
+
+    final tarjeta = Container(
         margin: EdgeInsets.only( right: 15.0),
         child: Column(
           children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: FadeInImage(
-                image: NetworkImage( film.getPosterImgs() ),
-                placeholder: AssetImage('assets/img/no-image.jpg'),
-                fit: BoxFit.cover,
-                height: 160.0,
+            Hero(
+              tag: film.uniqueID,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: FadeInImage(
+                  image: NetworkImage( film.getPosterImgs() ),
+                  placeholder: AssetImage('assets/img/no-image.jpg'),
+                  fit: BoxFit.cover,
+                  height: 160.0,
+                ),
               ),
             ),
             SizedBox( height: 5.0),
@@ -57,36 +62,14 @@ class MovieHorizontal extends StatelessWidget {
         ),
       );
 
-  }
+    return GestureDetector(
+      onTap: (){
 
-  List<Widget> _tarjetas( BuildContext context ) {
+        Navigator.pushNamed(context, 'detail', arguments: film);
 
-    return films.map( ( film ) {
-
-      return Container(
-        margin: EdgeInsets.only( right: 15.0),
-        child: Column(
-          children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: FadeInImage(
-                image: NetworkImage( film.getPosterImgs() ),
-                placeholder: AssetImage('assets/img/no-image.jpg'),
-                fit: BoxFit.cover,
-                height: 160.0,
-              ),
-            ),
-            SizedBox( height: 5.0),
-            Text(
-              film.title,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.caption,
-            )
-          ],
-        ),
-      );
-
-    }).toList();
+      },
+      child: tarjeta,
+    );
 
   }
 }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:peliculas/src/models/pelicula_model.dart';
+import 'package:peliculas/src/models/film_model.dart';
 
 class CardSwiper extends StatelessWidget {
 
-  final List<Pelicula> peliculas;
+  final List<Film> films;
 
-  CardSwiper({ @required this.peliculas});
+  CardSwiper({ @required this.films});
 
   @override
   Widget build(BuildContext context) {
@@ -21,17 +21,26 @@ class CardSwiper extends StatelessWidget {
         itemWidth: _screenSize.width * 0.7,
         itemHeight: _screenSize.height * 0.5,
         itemBuilder: (BuildContext context,int index){
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(20.0),
-            child: FadeInImage(
-              image: NetworkImage( peliculas[index].getPosterImgs()),
-              placeholder: AssetImage('assets/img/no-image.jpg'),
-              fit: BoxFit.cover,
+
+          films[index].uniqueID = '${ films[index].id }-card';
+
+          return Hero(
+            tag: films[index].uniqueID,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: GestureDetector(
+                onTap: () => Navigator.pushNamed(context, 'detail', arguments: films[index]),
+                child: FadeInImage(
+                  image: NetworkImage( films[index].getPosterImgs()),
+                  placeholder: AssetImage('assets/img/no-image.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
           );
           
         },
-        itemCount: peliculas.length,
+        itemCount: films.length,
         // pagination: new SwiperPagination(),
         // control: new SwiperControl(),
       ),
